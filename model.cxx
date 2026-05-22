@@ -1,3 +1,5 @@
+#pragma GCC optimize("O3") #pragma GCC target("-march=native")
+
 #include <bits/stdc++.h>
 using namespace std;
 

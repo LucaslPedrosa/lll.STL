@@ -1,0 +1,8 @@
+-std=c++23
+-Wall
+-Wextra
+-Wpedantic
+-Wshadow
+-Wformat=2
+-Wnull-dereference
+-fno-omit-frame-pointer
