@@ -15,7 +15,6 @@ My defaults for codeforces
 
 
 
-
 Algorithms that i already know:
 
 
