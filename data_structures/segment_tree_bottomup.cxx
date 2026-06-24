@@ -1,73 +1,85 @@
 
-// interactive segment tree implementation, 1-based indexing, bottom-up
 
-#include <algorithm>
-#include <limits>
+// interactive segment tree implementation, 1-based indexing, bottom-up
+// @brief
+//
+
+#include <bits/stdc++.h>
+#include <ios>
+
 using i64 = long long;
 
-class segment_tree_bottomup {
+
+template <typename T>
+struct Monoid
+{
+  T (*operation)(T, T);
+  T identity;
+};
+
+
+template <typename T, typename Container>
+class SegmentTreeBoUp
+{
+
 public:
-  int n;
-  int tree_size;
-  int *tree;
-  char op = 'M'; // M for max, S for sum
+  const size_t tree_size;
+  const size_t original_size;
+  Container tree;
+  Monoid<T> monoid;
+  SegmentTreeBoUp(const size_t sz, Container array, Monoid<T> m)
+      : tree_size(sz), original_size(sz / 2), tree(std::move(array)), monoid(m)
+  {
 
-  int operate(int a, int b) {
-    switch (op) {
-    case 'M':
-      return std::max(a, b);
-    case 'S':
-      return a + b;
-    default:
-      return 0;
+    // 'create' the tree
+    for (auto i{original_size - 1}; i > 0; i--)
+    {
+      tree[i] = monoid.operation(tree[i << 1], tree[(i << 1) + 1]);
     }
+
   }
 
-  void create(const int sz, const int *arr) {
-    n = sz;
-    tree_size = sz << 1;
-    tree = new int[tree_size];
-    for (int i = 0; i < n; i++) {
-      tree[n + i] = arr[i];
-    }
-    for (int i = n - 1; i > 0; i--) {
-      tree[i] = operate(tree[i << 1], tree[i << 1 | 1]);
-    }
-  }
 
-  segment_tree_bottomup(const int sz, const int *arr) { create(sz, arr); }
-  ~segment_tree_bottomup() { delete[] tree; }
-  segment_tree_bottomup(const segment_tree_bottomup &) = delete;
-  segment_tree_bottomup &operator=(const segment_tree_bottomup &) = delete;
+  // Expects 1-based index of original array
+  // [L, R)
+  T query(size_t L, size_t R)
+  {
+    T right_res = monoid.identity;
+    T left_res = monoid.identity;
 
-  int query(int L, int R) {
-    int r = R + n - 1;
-    int l = L + n - 1;
-    i64 toReturn = (op == 'M') ? std::numeric_limits<i64>::min() : 0;
-    while (l <= r) {
-      if (l & 1) {
-        toReturn = operate(toReturn, tree[l]);
+    size_t l = L + original_size - 1;
+    size_t r = R + original_size - 1;
+    while (l < r)
+    {
+      if (l & 1)
+      {
+        left_res = monoid.operation(left_res, tree[l]);
         l++;
       }
-      if (!(r & 1)) {
-        toReturn = operate(toReturn, tree[r]);
+      if (!(r & 1))
+      {
+        right_res = monoid.operation(right_res, tree[r]);
         r--;
       }
       l >>= 1;
       r >>= 1;
     }
 
-    return toReturn;
+    return monoid.operation(left_res, right_res);
   }
 
-  void update(int idx, int val) {
-    int i = idx + n - 1;
 
-    // tree[i] = operate(tree[i], val);
+  void update(size_t idx, T val)
+  {
+    size_t i = idx + original_size - 1;
+
     tree[i] = val;
 
-    for (i >>= 1; i > 0; i >>= 1) {
-      tree[i] = operate(tree[i << 1], tree[i << 1 | 1]);
+    for (i >>= 1; i > 0; i >>= 1)
+    {
+      tree[i] = monoid.operation(tree[i << 1], tree[i << 1 | 1]);
     }
   }
+
+
 };

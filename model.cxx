@@ -1,31 +1,43 @@
-#pragma GCC optimize("O3") #pragma GCC target("-march=native")
+// #pragma GCC optimize("Ofast,inline")
+// #pragma GCC target("-march=native")
+//
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
 
 #include <bits/stdc++.h>
 using namespace std;
 
+#ifndef ONLINE_JUDGE
+
+
+#endif
+
 using i64 = int64_t;
-using i32 = int32_t;
-using i16 = int16_t;
-using i8 = int8_t;
 using u64 = uint64_t;
-using u32 = uint32_t;
 
-// ifstream in("input.txt");
-// ofstream out("output.txt");
-// in >> a >> b;
+constexpr int INF = 1'000'000'000;
+constexpr i64 LINF = 4'000'000'000'000'000'000LL;
 
-auto solve() -> void {
+#define all(x) (x).begin(), (x).end()
+#define sz(x) static_cast<int>((x).size())
+
+
+auto solve() -> void
+{
   int n;
 
   std::cin >> n;
 }
 
-auto main() -> i32 {
-  // freopen("input.txt", "r", stdin);
-  // freopen("output.txt", "w", stdout);
-  std::iostream::sync_with_stdio(0);
-  std::cin.tie(0);
-  std::cout.tie(0);
+signed main()
+{
+#ifndef ONLINE_JUDGE
+  freopen("input.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
+#endif
+
+  ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
 
   // auto g = [](auto x, auto y){};
   int t = 1;
