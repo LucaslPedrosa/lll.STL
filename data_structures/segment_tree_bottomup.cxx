@@ -10,15 +10,15 @@
 using i64 = long long;
 
 
-template <typename T>
+template <typename T, typename OP>
 struct Monoid
 {
-  T (*operation)(T, T);
   T identity;
+  OP operation;
 };
 
 
-template <typename T, typename Container>
+template <typename T, typename Container, typename OP>
 class SegmentTreeBoUp
 {
 
@@ -26,8 +26,8 @@ public:
   const size_t tree_size;
   const size_t original_size;
   Container tree;
-  Monoid<T> monoid;
-  SegmentTreeBoUp(const size_t sz, Container array, Monoid<T> m)
+  Monoid<T, OP> monoid;
+  SegmentTreeBoUp(const size_t sz, Container array, Monoid<T, OP> m)
       : tree_size(sz), original_size(sz / 2), tree(std::move(array)), monoid(m)
   {
 
@@ -42,7 +42,7 @@ public:
 
   // Expects 1-based index of original array
   // [L, R)
-  T query(size_t L, size_t R)
+  T query(size_t const L, const size_t R) const
   {
     T right_res = monoid.identity;
     T left_res = monoid.identity;
@@ -58,8 +58,8 @@ public:
       }
       if (!(r & 1))
       {
-        right_res = monoid.operation(right_res, tree[r]);
         r--;
+        right_res = monoid.operation(tree[r], right_res);
       }
       l >>= 1;
       r >>= 1;
